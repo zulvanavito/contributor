@@ -18,6 +18,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: [
+          '"Plus Jakarta Sans"',
           "var(--font-sans)",
           "ui-sans-serif",
           "system-ui",
