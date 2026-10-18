@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -46,6 +46,24 @@ export function PreviewPanel({
 }: PreviewPanelProps) {
   const [isDownloadingIptc, setIsDownloadingIptc] = useState(false);
   const [isDownloadingRaw, setIsDownloadingRaw] = useState(false);
+  const [filePreviewUrl, setFilePreviewUrl] = useState<string | null>(null);
+
+  // Manage object URL lifecycle for uploaded imageFile to avoid leaks and re-render flicker
+  useEffect(() => {
+    if (!imageFile) {
+      setFilePreviewUrl(null);
+      return;
+    }
+
+    const url = URL.createObjectURL(imageFile);
+    setFilePreviewUrl(url);
+
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [imageFile]);
+
+  const displayUrl = imageUrl || filePreviewUrl;
 
   // Helper to generate a clean filename from title
   const getDownloadFilename = (extension: string = "jpg"): string => {
@@ -102,7 +120,8 @@ export function PreviewPanel({
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      URL.revokeObjectURL(downloadUrl);
+      // Revoke after timeout to guarantee download completion across all browsers
+      setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
 
       toast.success("Gambar dengan IPTC tertanam berhasil diunduh!", {
         id: toastId,
@@ -137,7 +156,8 @@ export function PreviewPanel({
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      URL.revokeObjectURL(downloadUrl);
+      // Revoke after timeout to guarantee download completion across all browsers
+      setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
 
       toast.success("Gambar mentah berhasil diunduh!");
     } catch (err) {
@@ -149,10 +169,10 @@ export function PreviewPanel({
     }
   };
 
-  // Open full size in new tab
+  // Open full size in new tab (works for both generated imageUrl and uploaded imageFile)
   const handleOpenFullSize = () => {
-    if (imageUrl) {
-      window.open(imageUrl, "_blank", "noopener,noreferrer");
+    if (displayUrl) {
+      window.open(displayUrl, "_blank", "noopener,noreferrer");
     }
   };
 
@@ -263,12 +283,12 @@ export function PreviewPanel({
           <Card className="border shadow-sm overflow-hidden bg-card">
             <div className="relative group bg-muted/30 flex items-center justify-center min-h-[280px] max-h-[460px] p-2">
               <img
-                src={imageUrl || (imageFile ? URL.createObjectURL(imageFile) : "")}
+                src={displayUrl || ""}
                 alt={metadata?.title || "Pratinjau Microstock"}
                 className="max-h-[440px] w-auto max-w-full object-contain rounded border shadow-sm"
               />
 
-              {imageUrl && (
+              {displayUrl && (
                 <button
                   type="button"
                   onClick={handleOpenFullSize}

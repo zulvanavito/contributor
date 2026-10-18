@@ -270,6 +270,27 @@ describe("Task 6: Antarmuka Studio Utama (Studio Tunggal Split View)", () => {
       expect(html).toContain("Unduh Mentah");
       expect(html).toContain("Unduh JPEG (IPTC Tertanam)");
       expect(html).toContain("Commercial Coffee Cup");
+      expect(html).toContain("Buka gambar ukuran penuh di tab baru");
+    });
+
+    it("should render preview for uploaded imageFile without throwing", () => {
+      // Mock File object
+      const dummyFile = new Blob(["dummy jpeg"], { type: "image/jpeg" }) as File;
+      Object.defineProperty(dummyFile, "name", { value: "test-upload.jpg" });
+
+      const html = renderToString(
+        React.createElement(PreviewPanel, {
+          imageUrl: null,
+          imageFile: dummyFile,
+          metadata: sampleMetadata,
+          isLoading: false,
+          error: null,
+        })
+      );
+
+      expect(html).toContain("Unduh Mentah");
+      expect(html).toContain("Unduh JPEG (IPTC Tertanam)");
+      expect(html).toContain("Commercial Coffee Cup");
     });
   });
 
