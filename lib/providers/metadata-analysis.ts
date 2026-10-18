@@ -172,3 +172,158 @@ export class GeminiFlashProvider implements MetadataAnalysisProvider {
     return parseMetadataResponse(candidateText);
   }
 }
+
+export const ENHANCE_PROMPT_SYSTEM_PROMPT = `You are a professional commercial stock photography prompt engineer.
+Your task is to transform the user's input prompt into a highly detailed, professional, commercial stock photography prompt in English.
+
+Strict Requirements:
+1. Language: If the input prompt is in Indonesian or any other language, translate it accurately to natural English.
+2. Subject & Context: Expand with precise visual details of the subject, environment, materials, textures, and context.
+3. Lighting: Specify commercial lighting (e.g., "soft studio lighting", "natural golden hour sunlight", "clean high-key commercial lighting").
+4. Composition & Camera: Include professional photographic composition tags (e.g., "shallow depth of field", "sharp focus", "clean background", "copy space", "shot on 85mm lens", "8k resolution").
+5. Commercial Safety: Strictly DO NOT include any trademarked brand names, company names, logos, or copyrighted characters.
+6. Output: Return ONLY the final enhanced English prompt as plain text. Do not include markdown formatting, quotes, bullet points, introductory phrases, or explanations.`;
+
+const INDONESIAN_TRANSLATIONS: Record<string, string> = {
+  "kedai kopi": "coffee shop cafe",
+  "kopi": "coffee",
+  "minimalis": "minimalist",
+  "sore hari": "late afternoon golden hour",
+  "pagi hari": "early morning sunlight",
+  "siang hari": "bright daylight",
+  "malam hari": "night ambient lighting",
+  "pemandangan": "scenic landscape",
+  "pegunungan": "mountain ranges",
+  "gunung": "mountain",
+  "pantai": "tropical beach",
+  "laut": "ocean",
+  "hutan": "lush forest",
+  "orang": "person",
+  "wanita": "woman",
+  "pria": "man",
+  "anak": "child",
+  "keluarga": "family",
+  "kantor": "modern corporate office",
+  "bisnis": "business corporate",
+  "makanan": "gourmet food cuisine",
+  "minuman": "refreshing beverage drink",
+  "arsitektur": "modern architecture",
+  "teknologi": "modern technology",
+  "alam": "nature",
+  "segar": "fresh",
+  "meja makan": "dining table",
+  "meja kerja": "work desk",
+  "meja kayu": "wooden table",
+};
+
+export function enhancePromptFallback(prompt: string): string {
+  if (!prompt || typeof prompt !== "string") {
+    return "commercial stock photography, professional studio lighting, sharp focus, clean composition, copy space, 8k resolution";
+  }
+
+  let text = prompt.trim();
+  // Antislop R-02: remove any em dash
+  text = text.replace(/—/g, ", ");
+
+  let translated = text;
+  // Apply Indonesian word substitutions if present
+  for (const [idTerm, enTerm] of Object.entries(INDONESIAN_TRANSLATIONS)) {
+    const regex = new RegExp(`\\b${idTerm}\\b`, "gi");
+    translated = translated.replace(regex, enTerm);
+  }
+
+  // Base photography descriptors
+  const commercialTags = [
+    "commercial stock photography",
+    "professional lighting",
+    "sharp focus",
+    "clean composition",
+    "copy space",
+    "8k resolution",
+    "photorealistic",
+  ];
+
+  let result = translated;
+  if (!result.toLowerCase().includes("commercial stock photography")) {
+    result = `${result}, ${commercialTags.join(", ")}`;
+  }
+
+  // Ensure no em dashes
+  return result.replace(/—/g, ", ");
+}
+
+export async function enhancePromptWithGemini(
+  prompt: string,
+  apiKey: string,
+  model: string = "gemini-1.5-flash"
+): Promise<string> {
+  const cleanPrompt = prompt ? prompt.trim() : "";
+  if (!cleanPrompt) {
+    throw new Error("Prompt is required and must not be empty");
+  }
+
+  const cleanKey = apiKey ? apiKey.trim() : "";
+  if (!cleanKey) {
+    throw new Error("Gemini API key is required");
+  }
+
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(cleanKey)}`;
+
+  const requestBody = {
+    contents: [
+      {
+        parts: [
+          {
+            text: `${ENHANCE_PROMPT_SYSTEM_PROMPT}\n\nOriginal prompt to enhance:\n${cleanPrompt}`,
+          },
+        ],
+      },
+    ],
+    generationConfig: {
+      temperature: 0.4,
+    },
+  };
+
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  if (!response.ok) {
+    let errorMessage = `HTTP ${response.status} ${response.statusText}`;
+    try {
+      const errorData = await response.json();
+      if (errorData?.error?.message) {
+        errorMessage = errorData.error.message;
+      }
+    } catch {
+      // use default HTTP error
+    }
+    throw new Error(`Gemini API error: ${errorMessage}`);
+  }
+
+  const data = await response.json();
+  const candidateText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!candidateText || typeof candidateText !== "string") {
+    throw new Error("No text response received from Gemini API");
+  }
+
+  let cleaned = candidateText.trim();
+  // Strip surrounding quotes if returned
+  if (
+    (cleaned.startsWith('"') && cleaned.endsWith('"')) ||
+    (cleaned.startsWith("'") && cleaned.endsWith("'"))
+  ) {
+    cleaned = cleaned.slice(1, -1).trim();
+  }
+
+  // Antislop R-02: replace any em dash character
+  cleaned = cleaned.replace(/—/g, ", ");
+
+  return cleaned;
+}
+
