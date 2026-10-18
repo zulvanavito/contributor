@@ -1,0 +1,134 @@
+<h2>Alur Kerja & Tampilan Studio Kontributor</h2>
+<p class="subtitle">Pilih konsep antarmuka yang paling nyaman untuk caramu memproduksi stok foto ke Adobe Stock dan Shutterstock:</p>
+
+<div class="options" data-choice-container>
+  <!-- OPTION A -->
+  <div class="option selected" data-choice="studio-split" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Studio Tunggal (Fokus 1 Gambar Tuntas)</h3>
+      <p>Layar terbagi dua: sisi kiri untuk membuat gambar atau upload file, sisi kanan langsung menampilkan preview gambar, metadata otomatis, tombol copy, dan download file dengan metadata tertanam.</p>
+    </div>
+  </div>
+
+  <!-- OPTION B -->
+  <div class="option" data-choice="studio-batch" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Batch Queue & Galeri (Produksi Massal)</h3>
+      <p>Bisa menghasilkan beberapa variasi gambar sekaligus atau drop puluhan file sekaligus dalam antrean. Tiap kartu memiliki status metadata, dan ada tombol "Download Semua (.ZIP)" sekaligus.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 2rem;">
+  <h3>Pratinjau Konsep Tampilan</h3>
+</div>
+
+<div class="split">
+  <!-- MOCKUP A -->
+  <div class="mockup">
+    <div class="mockup-header">Opsi A: Studio Tunggal (Split View)</div>
+    <div class="mockup-body" style="font-size: 0.82rem;">
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+        <span style="font-weight: 600; color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 4px;">🎨 Buat Gambar Baru</span>
+        <span style="color: var(--text-secondary); padding-bottom: 4px;">📁 Upload Gambar Sendiri</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <!-- Left Panel: Input -->
+        <div style="background: var(--bg-primary); padding: 0.75rem; border-radius: 8px;">
+          <div class="label">Prompt Gambar</div>
+          <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem; color: var(--text-secondary); font-size: 0.78rem; margin-bottom: 0.75rem;">
+            "Modern minimalist coffee shop interior, warm sunlight through glass window, commercial photo style, 8k"
+          </div>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
+            <div style="flex: 1; background: var(--bg-secondary); border: 1px solid var(--border); padding: 0.35rem; border-radius: 4px; font-size: 0.75rem; text-align: center;">Rasio 16:9</div>
+            <div style="flex: 1; background: var(--bg-secondary); border: 1px solid var(--border); padding: 0.35rem; border-radius: 4px; font-size: 0.75rem; text-align: center;">Kategori: Bisnis</div>
+          </div>
+          <button class="mock-button" style="width: 100%; font-weight: 500;">⚡ Generate Gambar & Metadata</button>
+        </div>
+
+        <!-- Right Panel: Preview & Metadata -->
+        <div style="background: var(--bg-primary); padding: 0.75rem; border-radius: 8px;">
+          <div class="placeholder" style="padding: 1.5rem 0.5rem; margin-bottom: 0.75rem; font-size: 0.8rem;">
+            🖼️ [Pratinjau Foto Kualitas Tinggi]
+          </div>
+          
+          <!-- Metadata Fields -->
+          <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem; margin-bottom: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="label" style="margin: 0;">Judul (Title)</span>
+              <button style="border: none; background: var(--bg-tertiary); padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; cursor: pointer;">📋 Copy</button>
+            </div>
+            <div style="font-size: 0.75rem; margin-top: 3px; font-weight: 500;">Cozy Modern Coffee Shop Interior with Sunlight</div>
+          </div>
+
+          <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem; margin-bottom: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="label" style="margin: 0;">Kata Kunci (45 Keywords)</span>
+              <button style="border: none; background: var(--bg-tertiary); padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; cursor: pointer;">📋 Copy All</button>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px;">
+              <span style="background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px; font-size: 0.68rem;">coffee shop</span>
+              <span style="background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px; font-size: 0.68rem;">cafe interior</span>
+              <span style="background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px; font-size: 0.68rem;">modern design</span>
+              <span style="background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px; font-size: 0.68rem;">sunlight</span>
+              <span style="background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px; font-size: 0.68rem;">+41 lagi</span>
+            </div>
+          </div>
+
+          <button style="width: 100%; background: var(--success); color: white; border: none; padding: 0.45rem; border-radius: 6px; font-size: 0.78rem; font-weight: 600; cursor: pointer;">
+            💾 Download JPEG (IPTC Metadata Tertanam)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOCKUP B -->
+  <div class="mockup">
+    <div class="mockup-header">Opsi B: Batch Queue & Galeri (Massal)</div>
+    <div class="mockup-body" style="font-size: 0.82rem;">
+      <!-- Batch Top Bar -->
+      <div style="background: var(--bg-primary); padding: 0.75rem; border-radius: 8px; margin-bottom: 0.75rem;">
+        <div style="display: flex; gap: 0.5rem;">
+          <input class="mock-input" placeholder="Ketik prompt utama (misal: Cyberpunk futuristic cityscapes)..." style="font-size: 0.78rem;">
+          <button class="mock-button" style="white-space: nowrap; font-size: 0.75rem;">⚡ Generate 4 Variasi</button>
+          <button style="background: var(--bg-secondary); border: 1px solid var(--border); padding: 0 0.75rem; border-radius: 6px; white-space: nowrap; font-size: 0.75rem;">📁 Upload Batch</button>
+        </div>
+      </div>
+
+      <!-- Batch Grid -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 0.75rem;">
+        <div style="border: 2px solid var(--accent); border-radius: 6px; padding: 0.4rem; background: var(--selected-bg); text-align: center;">
+          <div style="height: 50px; background: var(--bg-tertiary); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">Foto #1 (Aktif)</div>
+          <div style="font-size: 0.68rem; margin-top: 4px; color: var(--success); font-weight: 600;">✓ Metadata Siap</div>
+        </div>
+        <div style="border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem; background: var(--bg-secondary); text-align: center;">
+          <div style="height: 50px; background: var(--bg-tertiary); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">Foto #2</div>
+          <div style="font-size: 0.68rem; margin-top: 4px; color: var(--success); font-weight: 600;">✓ Metadata Siap</div>
+        </div>
+        <div style="border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem; background: var(--bg-secondary); text-align: center;">
+          <div style="height: 50px; background: var(--bg-tertiary); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">Foto #3</div>
+          <div style="font-size: 0.68rem; margin-top: 4px; color: var(--warning); font-weight: 600;">⏳ Menganalisis...</div>
+        </div>
+      </div>
+
+      <!-- Selected Item Action Strip -->
+      <div style="background: var(--bg-primary); padding: 0.6rem; border-radius: 6px; border: 1px solid var(--border);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <span style="font-weight: 600; font-size: 0.75rem;">Item Aktif: Foto #1</span>
+          <div style="display: flex; gap: 4px;">
+            <button style="border: none; background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px; font-size: 0.68rem;">Copy Title</button>
+            <button style="border: none; background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px; font-size: 0.68rem;">Copy Keywords</button>
+          </div>
+        </div>
+        <div style="font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 0.5rem;">50 keywords • Kategori: Technology • Format: JPEG (IPTC Ready)</div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button style="flex: 1; background: var(--bg-secondary); border: 1px solid var(--border); padding: 0.35rem; border-radius: 4px; font-size: 0.72rem;">Unduh File Ini</button>
+          <button style="flex: 1; background: var(--accent); color: white; border: none; padding: 0.35rem; border-radius: 4px; font-size: 0.72rem; font-weight: 600;">📦 Download Semua (.ZIP)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
