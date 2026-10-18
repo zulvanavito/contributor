@@ -226,8 +226,11 @@ export function enhancePromptFallback(prompt: string): string {
   text = text.replace(/—/g, ", ");
 
   let translated = text;
-  // Apply Indonesian word substitutions if present
-  for (const [idTerm, enTerm] of Object.entries(INDONESIAN_TRANSLATIONS)) {
+  // Apply Indonesian word substitutions if present (longer phrases first to avoid partial replacement)
+  const sortedTranslations = Object.entries(INDONESIAN_TRANSLATIONS).sort(
+    (a, b) => b[0].length - a[0].length
+  );
+  for (const [idTerm, enTerm] of sortedTranslations) {
     const regex = new RegExp(`\\b${idTerm}\\b`, "gi");
     translated = translated.replace(regex, enTerm);
   }

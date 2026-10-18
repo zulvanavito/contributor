@@ -2,8 +2,17 @@ import { NextResponse } from "next/server";
 import { GeminiFlashProvider } from "@/lib/providers/metadata-analysis";
 
 export async function POST(request: Request) {
+  let body: any;
   try {
-    const body = await request.json();
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      { error: "Format data JSON tidak valid" },
+      { status: 400 }
+    );
+  }
+
+  try {
     const { imageBase64, apiKey } = body || {};
 
     if (!imageBase64 || typeof imageBase64 !== "string" || !imageBase64.trim()) {

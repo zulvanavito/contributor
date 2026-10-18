@@ -223,6 +223,35 @@ describe("API Routes Validation & Handlers", () => {
   });
 
   describe("POST /api/generate-image", () => {
+    it("should return 400 if JSON body is malformed", async () => {
+      const request = new Request("http://localhost:3000/api/generate-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{ malformed json",
+      });
+
+      const response = await generateImageRoute(request);
+      expect(response.status).toBe(400);
+
+      const body = await response.json();
+      expect(body.error).toBe("Format data JSON tidak valid");
+    });
+
+    it("should return 400 if prompt exceeds 1000 characters", async () => {
+      const longPrompt = "a".repeat(1001);
+      const request = new Request("http://localhost:3000/api/generate-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: longPrompt }),
+      });
+
+      const response = await generateImageRoute(request);
+      expect(response.status).toBe(400);
+
+      const body = await response.json();
+      expect(body.error).toBe("Prompt maksimal 1000 karakter");
+    });
+
     it("should return 400 if prompt is missing or empty", async () => {
       const request = new Request("http://localhost:3000/api/generate-image", {
         method: "POST",
@@ -260,6 +289,20 @@ describe("API Routes Validation & Handlers", () => {
   });
 
   describe("POST /api/analyze-metadata", () => {
+    it("should return 400 if JSON body is malformed", async () => {
+      const request = new Request("http://localhost:3000/api/analyze-metadata", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "invalid json string",
+      });
+
+      const response = await analyzeMetadataRoute(request);
+      expect(response.status).toBe(400);
+
+      const body = await response.json();
+      expect(body.error).toBe("Format data JSON tidak valid");
+    });
+
     it("should return 400 if imageBase64 is missing", async () => {
       delete process.env.GEMINI_API_KEY;
       const request = new Request("http://localhost:3000/api/analyze-metadata", {
