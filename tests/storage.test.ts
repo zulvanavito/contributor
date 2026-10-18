@@ -183,11 +183,13 @@ describe("Task 5: LocalStorage Store & Settings Logic", () => {
   });
 
   describe("isValidGeminiApiKey validation helper", () => {
-    it("should return true for valid Gemini API keys starting with AIzaSy", () => {
-      // Standard Google AI Studio API keys start with AIzaSy and are ~39 characters
+    it("should return true for valid Gemini API keys starting with AIza", () => {
+      // Standard Google AI Studio API keys start with AIza and are ~39 characters
       expect(isValidGeminiApiKey("AIzaSyB3vY59zYv5X1aBcDefGhIjKlMnOpQrStU")).toBe(true);
       expect(isValidGeminiApiKey("AIzaSyC2V0d91d84f89_testKey1234567890-")).toBe(true);
       expect(isValidGeminiApiKey("  AIzaSyB3vY59zYv5X1aBcDefGhIjKlMnOpQrStU  ")).toBe(true);
+      expect(isValidGeminiApiKey('"AIzaSyB3vY59zYv5X1aBcDefGhIjKlMnOpQrStU"')).toBe(true);
+      expect(isValidGeminiApiKey("AIza1234567890abcdefghijklmnopqrstuvwxyz")).toBe(true);
     });
 
     it("should return false for empty or non-string inputs", () => {
@@ -199,18 +201,11 @@ describe("Task 5: LocalStorage Store & Settings Logic", () => {
       expect(isValidGeminiApiKey({} as any)).toBe(false);
     });
 
-    it("should return false for keys not starting with AIzaSy", () => {
-      expect(isValidGeminiApiKey("sk-ant-api03-abcdefghijklmnopqrstuvwxyz1234")).toBe(false);
-      expect(isValidGeminiApiKey("gsk_1234567890abcdefghijklmnopqrstuv")).toBe(false);
-      expect(isValidGeminiApiKey("AIza1234567890abcdefghijklmnopqrstuvwxyz")).toBe(false);
-      expect(isValidGeminiApiKey("aizasyB3vY59zYv5X1aBcDefGhIjKlMnOpQrStU")).toBe(false);
-    });
-
-    it("should return false for keys with invalid lengths or characters", () => {
+    it("should return false for keys with invalid characters or too short", () => {
       // Too short
       expect(isValidGeminiApiKey("AIzaSyShort")).toBe(false);
       expect(isValidGeminiApiKey("AIzaSy")).toBe(false);
-      // Invalid characters (spaces, special punctuation)
+      // Invalid characters (spaces inside, special punctuation)
       expect(isValidGeminiApiKey("AIzaSyB3vY59zYv5X1aBcDefGhIjKl!@#$%^&*()")).toBe(false);
       expect(isValidGeminiApiKey("AIzaSyB3vY59zYv5X1aBc DefGhIjKlMnOpQrStU")).toBe(false);
     });

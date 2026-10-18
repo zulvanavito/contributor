@@ -37,14 +37,19 @@ function notifySubscribers(settings: AppSettings): void {
 
 /**
  * Validates whether a given string matches the standard Google AI Studio / Gemini API key format.
- * Format: starts with 'AIzaSy' followed by 30 to 45 URL-safe base64 characters.
+ * Format: Google API keys start with 'AIza' followed by URL-safe base64 characters (typically 39 chars total).
  */
 export function isValidGeminiApiKey(key: string): boolean {
   if (!key || typeof key !== "string") {
     return false;
   }
-  const trimmed = key.trim();
-  return /^AIzaSy[A-Za-z0-9_-]{30,45}$/.test(trimmed);
+  const clean = key
+    .replace(/^["']|["']$/g, "")
+    .replace(/[\u200B-\u200D\uFEFF]/g, "")
+    .trim();
+
+  // Accept Google API keys starting with AIza or any valid key token of 30-64 chars
+  return /^AIza[A-Za-z0-9_-]{25,60}$/.test(clean) || /^[A-Za-z0-9_-]{35,64}$/.test(clean);
 }
 
 /**

@@ -89,17 +89,22 @@ export function SettingsDialog({
   }, [open]);
 
   const handleTestConnection = async () => {
-    const trimmedKey = apiKey.trim();
+    const cleanKey = apiKey
+      .replace(/^["']|["']$/g, "")
+      .replace(/[\u200B-\u200D\uFEFF]/g, "")
+      .trim();
 
-    if (!trimmedKey) {
+    if (!cleanKey) {
       setTestStatus("error");
       setTestMessage("Masukkan Gemini API Key terlebih dahulu.");
       return;
     }
 
-    if (!isValidGeminiApiKey(trimmedKey)) {
+    if (!isValidGeminiApiKey(cleanKey)) {
       setTestStatus("error");
-      setTestMessage("Format API Key tidak valid. Kunci harus diawali 'AIzaSy' (35-45 karakter).");
+      setTestMessage(
+        "Format API Key tidak valid. Pastikan seluruh karakter kunci telah disalin dari Google AI Studio."
+      );
       return;
     }
 
@@ -112,7 +117,7 @@ export function SettingsDialog({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           prompt: "test commercial stock photo",
-          apiKey: trimmedKey,
+          apiKey: cleanKey,
         }),
       });
 
@@ -142,8 +147,13 @@ export function SettingsDialog({
   };
 
   const handleSave = () => {
+    const cleanKey = apiKey
+      .replace(/^["']|["']$/g, "")
+      .replace(/[\u200B-\u200D\uFEFF]/g, "")
+      .trim();
+
     const updated = saveStoredSettings({
-      geminiApiKey: apiKey.trim(),
+      geminiApiKey: cleanKey,
       imageProvider,
       metadataProvider: "gemini",
       defaultAspectRatio: aspectRatio,
