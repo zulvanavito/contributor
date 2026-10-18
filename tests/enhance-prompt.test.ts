@@ -40,6 +40,14 @@ describe("Prompt Enhancement & Translation (Task 3)", () => {
       expect(enhanced).not.toContain("—");
     });
 
+    it("should prioritize multi-word phrases over single words using descending length order", () => {
+      const prompt = "kedai kopi dan meja makan";
+      const enhanced = enhancePromptFallback(prompt);
+
+      expect(enhanced.toLowerCase()).toContain("coffee shop cafe");
+      expect(enhanced.toLowerCase()).toContain("dining table");
+    });
+
     it("should not contain any em dash characters (Antislop R-02)", () => {
       const prompt = "pemandangan alam pegunungan yang asri";
       const enhanced = enhancePromptFallback(prompt);

@@ -41,6 +41,7 @@ import {
   ExternalLink,
   CheckCircle2,
   XCircle,
+  AlertTriangle,
   Loader2,
   RotateCcw,
   Sparkles,
@@ -57,7 +58,7 @@ export interface SettingsDialogProps {
   trigger?: React.ReactNode;
 }
 
-type TestStatus = "idle" | "testing" | "success" | "error";
+type TestStatus = "idle" | "testing" | "success" | "warning" | "error";
 
 export function SettingsDialog({
   open,
@@ -132,10 +133,11 @@ export function SettingsDialog({
         setTestMessage(`Koneksi gagal: ${errDesc}`);
       }
     } catch {
-      // In offline / test mock environment where fetch fails or route is not running
-      // If the key has a valid format, we report format valid
-      setTestStatus("success");
-      setTestMessage("Format API Key valid (AIzaSy terverifikasi).");
+      // In offline / network failure environment where fetch fails
+      setTestStatus("warning");
+      setTestMessage(
+        "Mode offline: Format API key valid, koneksi ke server tidak dapat diverifikasi."
+      );
     }
   };
 
@@ -262,6 +264,8 @@ export function SettingsDialog({
                 className={`mt-2 flex items-start gap-2 rounded-md p-2.5 text-xs ${
                   testStatus === "success"
                     ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20"
+                    : testStatus === "warning"
+                    ? "bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20"
                     : testStatus === "error"
                     ? "bg-destructive/10 text-destructive border border-destructive/20"
                     : "bg-muted text-muted-foreground"
@@ -270,6 +274,9 @@ export function SettingsDialog({
               >
                 {testStatus === "success" && (
                   <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
+                )}
+                {testStatus === "warning" && (
+                  <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
                 )}
                 {testStatus === "error" && (
                   <XCircle className="h-4 w-4 shrink-0 text-destructive mt-0.5" />

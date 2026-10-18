@@ -3,8 +3,17 @@ import { PollinationsProvider } from "@/lib/providers/image-gen";
 import { AspectRatio } from "@/lib/types";
 
 export async function POST(request: Request) {
+  let body: any;
   try {
-    const body = await request.json();
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      { error: "Format data JSON tidak valid" },
+      { status: 400 }
+    );
+  }
+
+  try {
     const { prompt, aspectRatio, style } = body || {};
 
     if (!prompt || typeof prompt !== "string" || !prompt.trim()) {
@@ -14,10 +23,17 @@ export async function POST(request: Request) {
       );
     }
 
+    if (prompt.length > 1000) {
+      return NextResponse.json(
+        { error: "Prompt maksimal 1000 karakter" },
+        { status: 400 }
+      );
+    }
+
     const provider = new PollinationsProvider();
     const result = await provider.generateImage(prompt, {
       aspectRatio: aspectRatio as AspectRatio,
-      style,
+      style: typeof style === "string" ? style : undefined,
     });
 
     return NextResponse.json({

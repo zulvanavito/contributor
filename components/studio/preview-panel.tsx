@@ -259,7 +259,7 @@ export function PreviewPanel({
                 <span>AI Generator</span>
               </div>
               <p className="text-[11px] text-muted-foreground">
-                Gunakan tab "Buat Gambar Baru" untuk membuat stok foto dengan prompt cerdas.
+                Gunakan tab &quot;Buat Gambar Baru&quot; untuk membuat stok foto dengan prompt cerdas.
               </p>
             </div>
 
